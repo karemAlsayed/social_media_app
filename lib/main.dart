@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:social_media_app/firebase_options.dart';
+import 'package:social_media_app/screens/auth/login_page.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,7 +19,7 @@ class SocialApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: true),
-      home: SizedBox(),
+      home: const LoginScreen(),
     );
   }
 }
