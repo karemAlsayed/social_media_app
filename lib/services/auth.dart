@@ -27,7 +27,7 @@ class AuthMethods {
             userEmail: email,
             userId: userCredential.user!.uid,
             userName: username,
-            userProfilePicture: '');
+            userProfilePicture: '', displayName: '');
         users.doc(userCredential.user!.uid).set(userModel.toJson());
         res = 'success';
       } else {
@@ -35,6 +35,23 @@ class AuthMethods {
       }
     } on Exception catch (e) {
       return e.toString();
+    }
+    return res;
+  }
+
+  signIn({required String email, required String password})async {
+    // ignore: unused_local_variable
+    String res = 'some error';
+    try {
+      if (email.isNotEmpty || password.isNotEmpty) {
+      await  _auth.signInWithEmailAndPassword(email: email, password: password);
+        res = 'success';
+      } else {
+        res = 'Enter All Fields';
+      }
+    } on Exception catch (e) {
+      // ignore: avoid_print
+      print(e);
     }
     return res;
   }

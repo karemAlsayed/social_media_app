@@ -1,8 +1,12 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
 import 'package:social_media_app/colors/app_colors.dart';
+import 'package:social_media_app/layout.dart';
 import 'package:social_media_app/screens/auth/register_page.dart';
+import 'package:social_media_app/services/auth.dart';
 import 'package:social_media_app/widgets/login_button.dart';
 import 'package:social_media_app/widgets/login_text_field.dart';
 
@@ -16,6 +20,27 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailcontroller = TextEditingController();
   TextEditingController passwordcontroller = TextEditingController();
+  signIn()async {
+    // ignore: unused_local_variable
+    try {
+      String res =await AuthMethods().signIn(
+          email: emailcontroller.text, password: passwordcontroller.text);
+      if (res == 'success') {
+        // ignore: use_build_context_synchronously
+        Navigator.pushAndRemoveUntil(context,
+                              MaterialPageRoute(
+                            builder: (context) {
+                              return const LayoutPage();
+                            },
+                          ), (route) => false);
+      } else {
+        print(res);
+      }
+    } on Exception catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,7 +94,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: passwordcontroller,
                     obsecure: true),
                 const Gap(20),
-                LoginButton(ontap: () {}, title: 'login'),
+                LoginButton(
+                    ontap: () {
+                      signIn();
+                    },
+                    title: 'login'),
                 const Gap(20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -80,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Navigator.pushAndRemoveUntil(context,
                               MaterialPageRoute(
                             builder: (context) {
-                            return  const RegisterPage();
+                              return const RegisterPage();
                             },
                           ), (route) => false);
                         },
