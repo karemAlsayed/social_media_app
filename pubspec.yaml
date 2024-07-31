@@ -45,6 +45,7 @@ dependencies:
   motion_tab_bar: ^2.0.4
   uuid: ^4.4.2
   image_picker: ^1.0.8
+  image_stack: ^2.1.1
 
 dev_dependencies:
   flutter_test:

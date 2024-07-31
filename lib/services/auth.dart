@@ -27,7 +27,7 @@ class AuthMethods {
             userEmail: email,
             userId: userCredential.user!.uid,
             userName: username,
-            userProfilePicture: '', displayName: '');
+            userProfilePicture: '', displayName: name);
         users.doc(userCredential.user!.uid).set(userModel.toJson());
         res = 'success';
       } else {
