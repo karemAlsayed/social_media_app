@@ -3,7 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:image_stack/image_stack.dart';
+import 'package:provider/provider.dart';
 import 'package:social_media_app/colors/app_colors.dart';
+import 'package:social_media_app/models/user.dart';
+import 'package:social_media_app/user_provider.dart';
 import 'package:social_media_app/widgets/post_card.dart';
 import 'package:social_media_app/widgets/posts_grid_view.dart';
 
@@ -17,7 +20,13 @@ class ProfilePage extends StatefulWidget {
 class _HomePageState extends State<ProfilePage> with TickerProviderStateMixin {
   late TabController tabController = TabController(length: 2, vsync: this);
   @override
+  void initState() {
+    Provider.of<UserProvider>(context, listen: false).getDetails();
+    super.initState();
+  }
+
   Widget build(BuildContext context) {
+    UserModel userModel = Provider.of<UserProvider>(context).userModel!;
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -100,14 +109,14 @@ class _HomePageState extends State<ProfilePage> with TickerProviderStateMixin {
             const Gap(5),
             Row(
               children: [
-                const Expanded(
+                 Expanded(
                   child: ListTile(
-                    contentPadding: EdgeInsets.all(0),
+                    contentPadding: const EdgeInsets.all(0),
                     title: Text(
-                      'name',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      userModel.displayName,
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    subtitle: Text('username'),
+                    subtitle: const Text('username'),
                   ),
                 ),
                 Expanded(
@@ -165,8 +174,11 @@ class _HomePageState extends State<ProfilePage> with TickerProviderStateMixin {
                 controller: tabController,
                 children: [
                   FutureBuilder(
-                    future:
-                        FirebaseFirestore.instance.collection('posts').where('userId', isEqualTo: FirebaseAuth.instance.currentUser!.uid).get(),
+                    future: FirebaseFirestore.instance
+                        .collection('posts')
+                        .where('userId',
+                            isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                        .get(),
                     builder: (context, AsyncSnapshot snapshot) {
                       if (snapshot.hasError) {
                         return const Text('error');
@@ -180,8 +192,11 @@ class _HomePageState extends State<ProfilePage> with TickerProviderStateMixin {
                     },
                   ),
                   FutureBuilder(
-                    future:
-                        FirebaseFirestore.instance.collection('posts').where('userId', isEqualTo: FirebaseAuth.instance.currentUser!.uid).get(),
+                    future: FirebaseFirestore.instance
+                        .collection('posts')
+                        .where('userId',
+                            isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+                        .get(),
                     builder: (context, AsyncSnapshot snapshot) {
                       if (snapshot.hasError) {
                         return const Text('error');
@@ -192,7 +207,7 @@ class _HomePageState extends State<ProfilePage> with TickerProviderStateMixin {
                           itemBuilder: (context, index) {
                             dynamic item = snapshot.data.docs[index];
                             dynamic data = snapshot.data! as dynamic;
-              
+
                             return PostCard(
                               description: data.docs[index]['description'],
                               image: item['postImage'],

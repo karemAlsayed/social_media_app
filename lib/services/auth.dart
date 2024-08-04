@@ -5,6 +5,13 @@ import 'package:social_media_app/models/user.dart';
 class AuthMethods {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+  getUserDetails() async {
+    User currentUser = _auth.currentUser!;
+    DocumentSnapshot documentSnapshot = await users.doc(currentUser.uid).get();
+    return UserModel.fromSnap(documentSnapshot);
+  }
+
   signUp({
     required String email,
     required String password,
@@ -27,7 +34,8 @@ class AuthMethods {
             userEmail: email,
             userId: userCredential.user!.uid,
             userName: username,
-            userProfilePicture: '', displayName: name);
+            userProfilePicture: '',
+            displayName: name);
         users.doc(userCredential.user!.uid).set(userModel.toJson());
         res = 'success';
       } else {
@@ -39,12 +47,13 @@ class AuthMethods {
     return res;
   }
 
-  signIn({required String email, required String password})async {
+  signIn({required String email, required String password}) async {
     // ignore: unused_local_variable
     String res = 'some error';
     try {
       if (email.isNotEmpty || password.isNotEmpty) {
-      await  _auth.signInWithEmailAndPassword(email: email, password: password);
+        await _auth.signInWithEmailAndPassword(
+            email: email, password: password);
         res = 'success';
       } else {
         res = 'Enter All Fields';

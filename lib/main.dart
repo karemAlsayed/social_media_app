@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:social_media_app/firebase_options.dart';
 import 'package:social_media_app/layout.dart';
+import 'package:social_media_app/user_provider.dart';
 import 'package:social_media_app/screens/auth/login_page.dart';
 
 void main() async {
@@ -18,18 +20,25 @@ class SocialApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(useMaterial3: true,appBarTheme: const AppBarTheme(surfaceTintColor: Colors.white)),
-      home: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return const LayoutPage();
-          } else {
-           return  const LoginScreen();
-          }
-        },
+    return ChangeNotifierProvider(
+      create: (context) {
+        UserProvider();
+      },
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+            useMaterial3: true,
+            appBarTheme: const AppBarTheme(surfaceTintColor: Colors.white)),
+        home: StreamBuilder<User?>(
+          stream: FirebaseAuth.instance.authStateChanges(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return const LayoutPage();
+            } else {
+              return const LoginScreen();
+            }
+          },
+        ),
       ),
     );
   }
